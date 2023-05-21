@@ -23,6 +23,7 @@ export class CategoryComponent implements OnInit {
     displayedColumns: string[] = ['id', 'name', 'description', 'actions'];
     dataSource = new MatTableDataSource<CategoryElement>();
 
+    //Obtiene todas las categorias
     getCategories(): void {
         this.categoryService.getCategories().subscribe((data: any) => {
             this.processCategoriesResponse(data);
@@ -32,6 +33,7 @@ export class CategoryComponent implements OnInit {
         };
     }
 
+    //Recarga la tabla con los datos
     processCategoriesResponse(resp: any): void {
         const dataCategory: CategoryElement[] = [];
 
@@ -45,6 +47,7 @@ export class CategoryComponent implements OnInit {
         }
     }
 
+    //Boton agregar categoria, me abre modal de NewCategoyComponent
     openCategoryDialog(): void {
         const dialogRef = this.dialog.open(NewCategoryComponent, {
             width: '450px'
@@ -60,6 +63,7 @@ export class CategoryComponent implements OnInit {
         });
     }
 
+    //Muestra modal con datos ya cargados
     edit(id: number, name: string, description: string): void {
         const dialogRef = this.dialog.open(NewCategoryComponent, {
             width: '450px',
@@ -76,6 +80,7 @@ export class CategoryComponent implements OnInit {
         });
     }
 
+    //Boton eliminar categoria, me abre modal
     delete(id: any): void {
         const dialogRef = this.dialog.open(ConfirmComponent, {
             width: '450px',
@@ -92,6 +97,26 @@ export class CategoryComponent implements OnInit {
         });
     }
 
+    //busca con keyup el input buscar
+    buscar(termino: any): void {
+        //Si vacia el input le carga todas las categorias
+        if(termino.length === 0) {
+            return this.getCategories();
+        }
+
+        //si detecta una letra actualiza la tabla
+        this.categoryService.getCategoryById(termino).subscribe({
+            next: (resp: any) => {
+                this.processCategoriesResponse(resp);
+            },
+            error: (error: any) => {
+                console.log('No se encontro el registro');
+            }
+        });
+
+    }
+
+    //Funcion para mostrar el snack, con parametros
     openSnackBar(message: string, action: string): MatSnackBarRef<SimpleSnackBar> {
         return this.snackBar.open(message, action, {
             duration: 2000
@@ -100,6 +125,7 @@ export class CategoryComponent implements OnInit {
 
 }
 
+//Formato para mapear cada dato en la tabla
 export interface CategoryElement {
     id: number,
     name: string;
