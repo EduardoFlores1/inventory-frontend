@@ -29,4 +29,14 @@ export class CategoryService {
         return this.http.post(endpoint, body);
     }
 
+    /**
+     * update category
+     * @param body recibe la categoria a guardar(name y description)
+     * @param id recibe al id de la categoria
+     */
+    updateCategory(body: any, id: any) {
+        const endpoint= `${base_url}/categories/${id}`;
+        return this.http.put(endpoint, body);
+    }
+
 }
